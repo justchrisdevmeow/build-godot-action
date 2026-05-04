@@ -1,4 +1,4 @@
-FROM godotengine/godot:4.6.2
+FROM barichello/godot-ci:4.6.2
 
 LABEL "com.github.actions.name"="Build Godot"
 LABEL "com.github.actions.description"="Build a Godot project for multiple platforms"
