@@ -1,35 +1,39 @@
-name: "Build Godot"
-description: "Build a Godot project for multiple platforms"
-author: yeslayla
+name: 'Build Godot Project'
+description: 'Build a Godot project for multiple platforms'
 inputs:
   name:
-    description: 'Name of the exported binary'
+    description: 'Name of the exported package/binary'
     required: true
   preset:
-    description: 'Name of the preset in `export_presets.cfg` to use'
+    description: 'Name of the preset found in export_presets.cfg'
     required: true
   subdirectory:
-    description: 'Optional name of the subdirectory to put exported project in'
-    default: ""
+    description: 'Subdirectory in build folder to output build'
+    required: false
   package:
-    description: 'Set true to output an artifact zip file'
-    default: false
+    description: 'Build artifact zip file'
+    required: false
+    default: 'false'
   projectDir:
-    description: 'Location of Godot project in repository'
-    default: "."
+    description: 'Directory containing your godot project'
+    required: false
+    default: '.'
   debugMode:
-    description: 'Whether or not to use `--export-debug`'
-    default: false
+    description: 'Run export in debug mode'
+    required: false
+    default: 'false'
+  headless:
+    description: 'Run Godot in headless mode'
+    required: false
+    default: 'true'
 runs:
-  using: docker
-  image: Dockerfile
+  using: 'docker'
+  image: 'Dockerfile'
   args:
-  - ${{ inputs.name }}
-  - ${{ inputs.preset }}
-  - ${{ inputs.subdirectory }}
-  - ${{ inputs.package }}
-  - ${{ inputs.projectDir }}
-  - ${{ inputs.debugMode }}
-branding:
-  icon: loader
-  color: blue
+    - ${{ inputs.name }}
+    - ${{ inputs.preset }}
+    - ${{ inputs.subdirectory }}
+    - ${{ inputs.package }}
+    - ${{ inputs.projectDir }}
+    - ${{ inputs.debugMode }}
+    - ${{ inputs.headless }}
