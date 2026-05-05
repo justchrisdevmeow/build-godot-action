@@ -19,6 +19,8 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  env:
+    HOME: /root
   args:
     - 'bash'
     - '-c'
