@@ -4,11 +4,11 @@ author: 'justchrisdevmeow'
 
 inputs:
   project-dir:
-    description: 'Directory containing project.godot (default: workspace root)'
+    description: 'Directory containing project.godot'
     required: false
     default: '.'
   preset:
-    description: 'Android export preset name (must match preset in export_presets.cfg)'
+    description: 'Android export preset name'
     required: false
     default: 'Android'
   debug-mode:
@@ -19,8 +19,6 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  env:
-    GODOT_EXPORT_TEMPLATES_PATH: /root/.local/share/godot/export_templates
   args:
     - 'bash'
     - '-c'
@@ -28,6 +26,6 @@ runs:
       set -e
       echo "Exporting in debug mode!"
       cd "${{ inputs.project-dir }}"
-      /usr/local/bin/godot --headless --export-debug "${{ inputs.preset }}" ./game.apk
+      /usr/local/bin/godot --headless --export-${{ inputs.debug-mode == 'true' && 'debug' || 'release' }} "${{ inputs.preset }}" ./game.apk
       echo "APK built successfully"
       ls -la *.apk
