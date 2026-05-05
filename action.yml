@@ -20,7 +20,7 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
-    HOME: /root
+    GODOT_EXPORT_TEMPLATES_PATH: /github/home/.local/share/godot/export_templates
   args:
     - 'bash'
     - '-c'
