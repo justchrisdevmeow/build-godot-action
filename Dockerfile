@@ -14,12 +14,16 @@ RUN apt-get update && apt-get install -y \
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Download and install export templates to root's home (Godot will find this location)
+# Download export templates
 RUN wget -O /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz && \
     mkdir -p /root/.local/share/godot/export_templates/4.6.2.stable && \
     cd /root/.local/share/godot/export_templates/4.6.2.stable && \
     unzip -o /tmp/templates.tpz && \
     rm /tmp/templates.tpz
+
+# Copy templates to the GitHub Actions HOME directory (critical fix)
+RUN mkdir -p /github/home/.local/share/godot/export_templates/4.6.2.stable && \
+    cp -r /root/.local/share/godot/export_templates/4.6.2.stable/* /github/home/.local/share/godot/export_templates/4.6.2.stable/
 
 WORKDIR /github/workspace
 
