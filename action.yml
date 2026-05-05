@@ -1,39 +1,32 @@
-name: 'Build Godot Project'
-description: 'Build a Godot project for multiple platforms'
+name: 'Build Godot APK'
+description: 'Export a Godot 4 project to Android APK'
+author: 'justchrisdevmeow'
+
 inputs:
-  name:
-    description: 'Name of the exported package/binary'
-    required: true
-  preset:
-    description: 'Name of the preset found in export_presets.cfg'
-    required: true
-  subdirectory:
-    description: 'Subdirectory in build folder to output build'
-    required: false
-  package:
-    description: 'Build artifact zip file'
-    required: false
-    default: 'false'
-  projectDir:
-    description: 'Directory containing your godot project'
+  project-dir:
+    description: 'Directory containing project.godot (default: workspace root)'
     required: false
     default: '.'
-  debugMode:
-    description: 'Run export in debug mode'
+  preset:
+    description: 'Android export preset name (must match preset in export_presets.cfg)'
     required: false
-    default: 'false'
-  headless:
-    description: 'Run Godot in headless mode'
+    default: 'Android'
+  debug-mode:
+    description: 'Export in debug mode (true/false)'
     required: false
     default: 'true'
+
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.name }}
-    - ${{ inputs.preset }}
-    - ${{ inputs.subdirectory }}
-    - ${{ inputs.package }}
-    - ${{ inputs.projectDir }}
-    - ${{ inputs.debugMode }}
-    - ${{ inputs.headless }}
+    - 'bash'
+    - '-c'
+    - |
+      set -e
+      echo "Exporting in debug mode!" && \
+      cd "${{ inputs.project-dir }}" && \
+      mkdir -p /github/home/.local/share/godot/export_templates && \
+      /usr/local/bin/godot --headless --export-${{ inputs.debug-mode == 'true' && 'debug' || 'release' }} "${{ inputs.preset }}" ./game.apk && \
+      echo "APK built successfully" && \
+      ls -la *.apk
