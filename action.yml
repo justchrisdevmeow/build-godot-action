@@ -19,6 +19,8 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  env:
+    GODOT_EXPORT_TEMPLATES_PATH: /root/.local/share/godot/export_templates
   args:
     - 'bash'
     - '-c'
@@ -26,10 +28,6 @@ runs:
       set -e
       echo "Exporting in debug mode!"
       cd "${{ inputs.project-dir }}"
-      # Ensure export templates are accessible
-      mkdir -p /github/home/.local/share/godot/export_templates
-      # Use the templates from root's directory
-      ln -sf /root/.local/share/godot/export_templates /github/home/.local/share/godot/
       /usr/local/bin/godot --headless --export-debug "${{ inputs.preset }}" ./game.apk
       echo "APK built successfully"
       ls -la *.apk
