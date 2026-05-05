@@ -1,15 +1,25 @@
 FROM barichello/godot-ci:4.6.2
 
-LABEL "com.github.actions.name"="Build Godot"
-LABEL "com.github.actions.description"="Build a Godot project for multiple platforms"
-LABEL "com.github.actions.icon"="loader"
-LABEL "com.github.actions.color"="blue"
-
-LABEL repository="https://github.com/yeslayla/build-godot-action"
-LABEL homepage="https://cloudsumu.com/"
-LABEL maintainer="Layla <layla@cloudsumu.com>"
-
+# Switch to root to install system packages
 USER root
-ADD entrypoint.sh /entrypoint.sh
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+
+# Install missing dependencies: fontconfig (for Godot fonts) and OpenJDK 17 (for Android export)
+RUN apt-get update && apt-get install -y \
+    fontconfig \
+    openjdk-17-jdk-headless \
+    --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set Java environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Switch back to the 'godot' user (created by the base image)
+USER godot
+
+# Set working directory
+WORKDIR /github/workspace
+
+# Default command (can be overridden)
+CMD ["godot", "--version"]
